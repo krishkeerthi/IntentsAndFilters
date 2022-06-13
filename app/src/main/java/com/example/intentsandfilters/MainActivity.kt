@@ -2,6 +2,7 @@ package com.example.intentsandfilters
 
 import android.app.SearchManager
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.AlarmClock
@@ -89,6 +90,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.selectContact.setOnClickListener {
             selectContact()
+        }
+
+        binding.openFile.setOnClickListener {
+            selectFile()
         }
 
     }
@@ -241,6 +246,26 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun selectFile(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
+
+        selectFileLauncher.launch(intent)
+    }
+
+    private val selectFileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if (result.resultCode == RESULT_OK) {
+            val thumbnail: Bitmap? = result.data?.getParcelableExtra("data")
+
+            if(thumbnail != null) {
+                Toast.makeText(this,"selected image", Toast.LENGTH_SHORT).show()
+                binding.imageView.setImageBitmap(thumbnail)
+            }
+
+        }
+
+    }
 
 
 
